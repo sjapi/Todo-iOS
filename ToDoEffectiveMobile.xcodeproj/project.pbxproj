@@ -14,7 +14,7 @@
 		10584FFD2E3A55D900C337E8 /* Exceptions for "ToDoEffectiveMobile" folder in "ToDoEffectiveMobile" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Support/Info.plist,
 			);
 			target = 10584FEA2E3A55D700C337E8 /* ToDoEffectiveMobile */;
 		};
@@ -147,7 +147,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RYP579LK57;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ToDoEffectiveMobile/Info.plist;
+				INFOPLIST_FILE = ToDoEffectiveMobile/Support/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -175,7 +175,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RYP579LK57;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ToDoEffectiveMobile/Info.plist;
+				INFOPLIST_FILE = ToDoEffectiveMobile/Support/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
