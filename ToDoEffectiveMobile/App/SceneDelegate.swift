@@ -13,8 +13,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MARK: - App Setup
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let wc = (scene as? UIWindowScene) else { return }
-        let vc = ViewController()
+        let vc = TasksListRouter.createModule()
         window = UIWindow(windowScene: wc)
+        window?.tintColor = .systemYellow
         window?.rootViewController = UINavigationController(rootViewController: vc)
         window?.makeKeyAndVisible()
     }
