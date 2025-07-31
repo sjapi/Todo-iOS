@@ -54,6 +54,31 @@ final class TasksListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: false)
         presenter?.onTaskTapped(index: indexPath.row)
     }
+    
+    override func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: { [weak self] in
+            guard let self, let presenter else { return UIViewController() }
+            let task = presenter.tasksList[indexPath.row]
+            let preview = TaskPreviewViewController(task: task)
+            return preview
+        }, actionProvider: { [weak self] _ in
+            guard let self else { return nil }
+            let editAction = UIAction(title: "Редактировать", image: UIImage(systemName: "square.and.pencil")) { _ in
+                self.presenter?.onEditActionTapped(at: indexPath.row)
+            }
+            let shareAction = UIAction(title: "Поделиться", image: UIImage(systemName: "square.and.arrow.up")) { _ in
+                self.presenter?.onShareActionTapped(at: indexPath.row)
+            }
+            let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                self.presenter?.onDeleteActionTapped(at: indexPath.row)
+            }
+            return UIMenu(title: "", children: [editAction, shareAction, deleteAction])
+        })
+    }
 }
 
 // MARK: - Private Methods

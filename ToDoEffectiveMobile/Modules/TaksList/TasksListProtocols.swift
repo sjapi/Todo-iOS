@@ -26,6 +26,9 @@ protocol ViewToPresenterTasksListProtocol: AnyObject {
     func onTaskCheckboxTapped(index: Int)
     func onTaskTapped(index: Int)
     func searchTextDidChange(_ text: String)
+    func onEditActionTapped(at index: Int)
+    func onShareActionTapped(at index: Int)
+    func onDeleteActionTapped(at index: Int)
 }
 
 // MARK: Interactor Input (Presenter -> Interactor)

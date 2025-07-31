@@ -50,6 +50,15 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
         view?.showEmptyStateLabel(tasksList.count == 0)
         view?.updateTable()
     }
+    
+    func onEditActionTapped(at index: Int) {
+    }
+    
+    func onShareActionTapped(at index: Int) {
+    }
+    
+    func onDeleteActionTapped(at index: Int) {
+    }
 }
 
 // MARK: - Private Methods
