@@ -10,7 +10,7 @@ import UIKit
 
 final class TasksListViewController: UITableViewController {
     // MARK: - Properties
-    weak var presenter: ViewToPresenterTasksListProtocol?
+    var presenter: ViewToPresenterTasksListProtocol?
     
     // MARK: - UI
     private let searchController = UISearchController()
@@ -22,22 +22,34 @@ final class TasksListViewController: UITableViewController {
         setupTableView()
         setupToolbar()
     }
+   
+    // MARK: - Init & Deinit
+    deinit {
+        
+    }
     
     // MARK: - Table View Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return presenter?.tasksList.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskCell.identifier, for: indexPath) as? TaskCell else {
             return UITableViewCell()
         }
-        cell.configure(completed: Bool.random())
+        if let todo = presenter?.tasksList[indexPath.row] {
+            cell.configure(with: todo)
+            cell.onCheckboxTappedHandler = { [weak self] in
+                guard let self else { return }
+                presenter?.onTaskCheckboxTapped(index: indexPath.row)
+            }
+        }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
+        presenter?.onTaskTapped(index: indexPath.row)
     }
 }
 
@@ -57,7 +69,7 @@ private extension TasksListViewController {
     func setupToolbar() {
         navigationController?.isToolbarHidden = false
         let centerLabel = UILabel()
-        centerLabel.text = "10 Задач"
+        centerLabel.text = "\(presenter?.tasksList.count ?? 0) Задач"
         centerLabel.font = .systemFont(ofSize: 13)
         centerLabel.sizeToFit()
         let centerItem = UIBarButtonItem(customView: centerLabel)
@@ -79,6 +91,7 @@ private extension TasksListViewController {
     }
 }
 
+// MARK: - Actions
 @objc private extension TasksListViewController {
     func editTapped() {
         print("edit")
@@ -90,7 +103,9 @@ extension TasksListViewController: UISearchBarDelegate {
     
 }
 
-// MARK: - PresenterToViewTasksListProtocol
+// MARK: - Presenter -> View
 extension TasksListViewController: PresenterToViewTasksListProtocol {
-    
+    func updateCell(at indexPath: IndexPath) {
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
 }

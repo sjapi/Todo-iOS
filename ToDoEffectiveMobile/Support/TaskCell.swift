@@ -10,8 +10,11 @@ import UIKit
 final class TaskCell: UITableViewCell {
     static let identifier: String = "taks.cell.identifier.sjapi"
     
+    // MARK: - Handler
+    var onCheckboxTappedHandler: (() -> Void)? = nil
+    
     // MARK: - UI
-    private let checkboxView = UIImageView()
+    private let checkboxButton = ExtendedTapAreaButton()
     
     private let containerStack = UIStackView()
     
@@ -44,22 +47,23 @@ final class TaskCell: UITableViewCell {
         fatalError("nah, no storyboards")
     }
     
-    func configure(completed: Bool) {
-        titleLabel.text = "Заняться спортом"
-        subTitleLabel.text = "Сходить в спортзал или сделать тренировку дома. Не забыть про разминку и растяжку!"
-        dateLabel.text = "09/02/24"
-        if completed {
+    func configure(with model: TodoTaskModel) {
+        titleLabel.text = model.name
+        subTitleLabel.text = model.description
+        dateLabel.text = model.formattedTimestampCreated
+        
+        if model.isCompleted {
             titleLabel.textColor = .secondaryLabel
             titleLabel.setStrikeThrough(true)
             subTitleLabel.textColor = .secondaryLabel
-            checkboxView.image = UIImage(systemName: "checkmark.circle")
-            checkboxView.tintColor = .tintColor
+            checkboxButton.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
+            checkboxButton.tintColor = .tintColor
         } else {
             titleLabel.textColor = .label
             titleLabel.setStrikeThrough(false)
             subTitleLabel.textColor = .label
-            checkboxView.image = UIImage(systemName: "circle")
-            checkboxView.tintColor = .gray
+            checkboxButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            checkboxButton.tintColor = .gray
         }
     }
 }
@@ -70,24 +74,37 @@ private extension TaskCell {
         containerStack.axis = .vertical
         containerStack.alignment = .leading
         containerStack.spacing = 6
+        
         [titleLabel, subTitleLabel, dateLabel].forEach {
             $0.numberOfLines = 2
             containerStack.addArrangedSubview($0)
         }
-        [checkboxView, containerStack].forEach {
+        
+        checkboxButton.extraTapArea = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        checkboxButton.addTarget(self, action: #selector(onCheckboxTapped), for: .touchUpInside)
+        checkboxButton.contentVerticalAlignment = .fill
+        checkboxButton.contentHorizontalAlignment = .fill
+        checkboxButton.imageView?.contentMode = .scaleAspectFit
+        
+        [containerStack, checkboxButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            addSubview($0)
+            contentView.addSubview($0)
         }
         NSLayoutConstraint.activate([
-            checkboxView.widthAnchor.constraint(equalToConstant: 30),
-            checkboxView.heightAnchor.constraint(equalTo: checkboxView.widthAnchor),
-            checkboxView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            checkboxView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            checkboxButton.widthAnchor.constraint(equalToConstant: 30),
+            checkboxButton.heightAnchor.constraint(equalTo: checkboxButton.widthAnchor),
+            checkboxButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            checkboxButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
             
-            containerStack.leadingAnchor.constraint(equalTo: checkboxView.trailingAnchor, constant: 8),
-            containerStack.topAnchor.constraint(equalTo: checkboxView.topAnchor),
-            containerStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            containerStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
+            containerStack.leadingAnchor.constraint(equalTo: checkboxButton.trailingAnchor, constant: 8),
+            containerStack.topAnchor.constraint(equalTo: checkboxButton.topAnchor),
+            containerStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            containerStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
         ])
+    }
+    
+    @objc func onCheckboxTapped() {
+        print("checkbox tapped")
+        onCheckboxTappedHandler?()
     }
 }

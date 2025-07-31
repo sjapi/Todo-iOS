@@ -10,5 +10,5 @@ import Foundation
 
 final class TasksListInteractor: PresenterToInteractorTasksListProtocol {
     // MARK: Properties
-    weak var presenter: InteractorToPresenterTasksListProtocol?
+    var presenter: InteractorToPresenterTasksListProtocol?
 }

@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: View Output (Presenter -> View)
 protocol PresenterToViewTasksListProtocol {
-   
+    func updateCell(at indexPath: IndexPath)
 }
 
 // MARK: View Input (View -> Presenter)
@@ -18,6 +18,10 @@ protocol ViewToPresenterTasksListProtocol: AnyObject {
     var view: PresenterToViewTasksListProtocol? { get set }
     var interactor: PresenterToInteractorTasksListProtocol? { get set }
     var router: PresenterToRouterTasksListProtocol? { get set }
+    
+    var tasksList: [TodoTaskModel] { get }
+    func onTaskCheckboxTapped(index: Int)
+    func onTaskTapped(index: Int)
 }
 
 // MARK: Interactor Input (Presenter -> Interactor)
