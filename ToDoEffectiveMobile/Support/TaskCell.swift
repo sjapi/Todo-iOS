@@ -48,19 +48,17 @@ final class TaskCell: UITableViewCell {
     }
     
     func configure(with model: TodoTaskModel) {
-        titleLabel.text = model.name
         subTitleLabel.text = model.description
         dateLabel.text = model.formattedTimestampCreated
         
+        titleLabel.setStrikeThrough(model.isCompleted, text: model.name)
         if model.isCompleted {
             titleLabel.textColor = .secondaryLabel
-            titleLabel.setStrikeThrough(true)
             subTitleLabel.textColor = .secondaryLabel
             checkboxButton.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
             checkboxButton.tintColor = .tintColor
         } else {
             titleLabel.textColor = .label
-            titleLabel.setStrikeThrough(false)
             subTitleLabel.textColor = .label
             checkboxButton.setImage(UIImage(systemName: "circle"), for: .normal)
             checkboxButton.tintColor = .gray

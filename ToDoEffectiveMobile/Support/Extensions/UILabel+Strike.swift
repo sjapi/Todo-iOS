@@ -8,8 +8,7 @@
 import UIKit
 
 extension UILabel {
-    func setStrikeThrough(_ isStriked: Bool) {
-        guard let text = self.text else { return }
+    func setStrikeThrough(_ isStriked: Bool, text: String) {
         if isStriked {
             let attributedString = NSMutableAttributedString(string: text)
             attributedString.addAttribute(
