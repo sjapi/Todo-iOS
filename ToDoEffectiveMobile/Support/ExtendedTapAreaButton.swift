@@ -11,7 +11,6 @@ final class ExtendedTapAreaButton: UIButton {
     var extraTapArea: UIEdgeInsets = .zero
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        let largerBounds = bounds.insetBy(dx: -extraTapArea.left, dy: -extraTapArea.top)
         let extendedBounds = bounds.inset(by: UIEdgeInsets(
             top: -extraTapArea.top,
             left: -extraTapArea.left,

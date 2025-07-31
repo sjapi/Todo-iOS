@@ -11,6 +11,8 @@ import Foundation
 // MARK: View Output (Presenter -> View)
 protocol PresenterToViewTasksListProtocol {
     func updateCell(at indexPath: IndexPath)
+    func updateTable()
+    func showEmptyStateLabel(_ isShown: Bool)
 }
 
 // MARK: View Input (View -> Presenter)
@@ -20,8 +22,10 @@ protocol ViewToPresenterTasksListProtocol: AnyObject {
     var router: PresenterToRouterTasksListProtocol? { get set }
     
     var tasksList: [TodoTaskModel] { get }
+    func viewDidLoad()
     func onTaskCheckboxTapped(index: Int)
     func onTaskTapped(index: Int)
+    func searchTextDidChange(_ text: String)
 }
 
 // MARK: Interactor Input (Presenter -> Interactor)

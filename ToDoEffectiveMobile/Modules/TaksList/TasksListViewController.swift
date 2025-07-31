@@ -14,15 +14,18 @@ final class TasksListViewController: UITableViewController {
     
     // MARK: - UI
     private let searchController = UISearchController()
+    private let emptyStateLabel = UILabel()
     
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter?.viewDidLoad()
         setupNavigationBar()
         setupTableView()
         setupToolbar()
+        setupEmptyStateLabel()
     }
-   
+    
     // MARK: - Init & Deinit
     deinit {
         
@@ -61,7 +64,9 @@ private extension TasksListViewController {
         navigationItem.largeTitleDisplayMode = .always
         
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.delegate = self
         searchController.searchBar.placeholder = "Search"
+        searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
@@ -89,6 +94,19 @@ private extension TasksListViewController {
     func setupTableView() {
         tableView.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
     }
+    
+    func setupEmptyStateLabel() {
+        emptyStateLabel.text = "Нет задач"
+        emptyStateLabel.textAlignment = .center
+        emptyStateLabel.textColor = .secondaryLabel
+        emptyStateLabel.isHidden = true
+        emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateLabel)
+        NSLayoutConstraint.activate([
+            emptyStateLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            emptyStateLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
+        ])
+    }
 }
 
 // MARK: - Actions
@@ -100,12 +118,34 @@ private extension TasksListViewController {
 
 // MARK: - UISearchBarDelegate
 extension TasksListViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        presenter?.searchTextDidChange(searchText)
+    }
     
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        presenter?.searchTextDidChange("")
+    }
+}
+
+// MARK: - UISearchControllerDelegate
+extension TasksListViewController: UISearchControllerDelegate {
+    func willDismissSearchController(_ searchController: UISearchController) {
+        presenter?.searchTextDidChange("")
+    }
 }
 
 // MARK: - Presenter -> View
 extension TasksListViewController: PresenterToViewTasksListProtocol {
     func updateCell(at indexPath: IndexPath) {
         tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    
+    func updateTable() {
+        tableView.reloadData()
+    }
+    
+    func showEmptyStateLabel(_ isShown: Bool) {
+        tableView.isUserInteractionEnabled = !isShown
+        emptyStateLabel.isHidden = !isShown
     }
 }

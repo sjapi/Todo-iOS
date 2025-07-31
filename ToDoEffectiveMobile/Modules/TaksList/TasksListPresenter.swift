@@ -15,14 +15,20 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     var router: PresenterToRouterTasksListProtocol?
     
     // MARK: - Other Properties
+    private var allTasksList: [TodoTaskModel] = []
     var tasksList: [TodoTaskModel] = []
     
     // MARK: - Init
     init() {
-        tasksList = loadTasksList()
+        allTasksList = loadTasksList()
+        tasksList = allTasksList
     }
     
     // MARK: - Public Methods
+    func viewDidLoad() {
+        view?.showEmptyStateLabel(tasksList.count == 0)
+    }
+    
     func onTaskCheckboxTapped(index: Int) {
         self.tasksList[index].isCompleted.toggle()
         view?.updateCell(at: IndexPath(row: index, section: 0))
@@ -30,6 +36,19 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     
     func onTaskTapped(index: Int) {
         print("Navigate to task detail module")
+    }
+    
+    func searchTextDidChange(_ text: String) {
+        if text.isEmpty {
+            tasksList = allTasksList
+        } else {
+            tasksList = allTasksList.filter {
+                $0.name.lowercased().contains(text.lowercased()) ||
+                $0.description?.lowercased().contains(text.lowercased()) ?? false
+            }
+        }
+        view?.showEmptyStateLabel(tasksList.count == 0)
+        view?.updateTable()
     }
 }
 

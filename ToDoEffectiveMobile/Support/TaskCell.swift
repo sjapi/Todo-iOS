@@ -80,7 +80,7 @@ private extension TaskCell {
             containerStack.addArrangedSubview($0)
         }
         
-        checkboxButton.extraTapArea = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        checkboxButton.extraTapArea = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         checkboxButton.addTarget(self, action: #selector(onCheckboxTapped), for: .touchUpInside)
         checkboxButton.contentVerticalAlignment = .fill
         checkboxButton.contentHorizontalAlignment = .fill
@@ -104,7 +104,6 @@ private extension TaskCell {
     }
     
     @objc func onCheckboxTapped() {
-        print("checkbox tapped")
         onCheckboxTappedHandler?()
     }
 }
