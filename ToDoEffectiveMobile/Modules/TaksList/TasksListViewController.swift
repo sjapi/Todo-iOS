@@ -33,14 +33,14 @@ final class TasksListViewController: UITableViewController {
     
     // MARK: - Table View Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter?.tasksList.count ?? 0
+        return presenter?.getTasksCount() ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskCell.identifier, for: indexPath) as? TaskCell else {
             return UITableViewCell()
         }
-        if let todo = presenter?.tasksList[indexPath.row] {
+        if let todo = presenter?.getTaskModel(for: indexPath.row) {
             cell.configure(with: todo)
             cell.onCheckboxTappedHandler = { [weak self] in
                 guard let self else { return }
@@ -61,8 +61,7 @@ final class TasksListViewController: UITableViewController {
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: { [weak self] in
-            guard let self, let presenter else { return UIViewController() }
-            let task = presenter.tasksList[indexPath.row]
+            guard let self, let presenter, let task = presenter.getTaskModel(for: indexPath.row) else { return UIViewController() }
             let preview = TaskPreviewViewController(task: task)
             return preview
         }, actionProvider: { [weak self] _ in
@@ -99,7 +98,7 @@ private extension TasksListViewController {
     func setupToolbar() {
         navigationController?.isToolbarHidden = false
         let centerLabel = UILabel()
-        centerLabel.text = "\(presenter?.tasksList.count ?? 0) Задач"
+        centerLabel.text = "\(presenter?.getTasksCount() ?? 0) Задач"
         centerLabel.font = .systemFont(ofSize: 13)
         centerLabel.sizeToFit()
         let centerItem = UIBarButtonItem(customView: centerLabel)
@@ -172,5 +171,11 @@ extension TasksListViewController: PresenterToViewTasksListProtocol {
     func showEmptyStateLabel(_ isShown: Bool) {
         tableView.isUserInteractionEnabled = !isShown
         emptyStateLabel.isHidden = !isShown
+    }
+    
+    func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ок", style: .cancel))
+        present(alert, animated: true)
     }
 }
