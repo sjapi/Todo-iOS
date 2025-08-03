@@ -40,12 +40,19 @@ final class TasksListInteractor: PresenterToInteractorTasksListProtocol {
                 $0.description?.lowercased().contains(text.lowercased()) ?? false
             }
         }
-        presenter?.tasksUpdated(.success(allTasksList))
+        presenter?.tasksUpdated(.success(tasksList))
     }
     
     func deleteTask(id: Int) {
-        allTasksList.remove(at: id)
-        presenter?.tasksUpdated(.success(allTasksList))
+        tasksList.remove(at: id)
+        presenter?.tasksUpdated(.success(tasksList))
+    }
+    
+    func addNewTask(title: String, description: String?) {
+        let now = Int(Date.now.timeIntervalSince1970)
+        let new = TodoTaskModel(name: title, description: description, timestampCreated: now, timestampModified: now, isCompleted: false)
+        tasksList = [new] + tasksList
+        presenter?.newTaskAdded(new)
     }
 }
 

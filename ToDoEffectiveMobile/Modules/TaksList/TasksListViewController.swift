@@ -110,7 +110,7 @@ private extension TasksListViewController {
                 image: UIImage(systemName: "square.and.pencil"),
                 style: .plain,
                 target: self,
-                action: #selector(editTapped)
+                action: #selector(createTapped)
             )
         ]
     }
@@ -135,8 +135,8 @@ private extension TasksListViewController {
 
 // MARK: - Actions
 @objc private extension TasksListViewController {
-    func editTapped() {
-        print("edit")
+    func createTapped() {
+        presenter?.onCreateTaskDidTap()
     }
 }
 
@@ -177,5 +177,29 @@ extension TasksListViewController: PresenterToViewTasksListProtocol {
         let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ок", style: .cancel))
         present(alert, animated: true)
+    }
+    
+    func showCreateTaskView() {
+        let alert = UIAlertController(title: "Добавить новую заметку", message: nil, preferredStyle: .alert)
+        alert.addTextField { titleTextField in
+            titleTextField.placeholder = "Задача"
+        }
+        alert.addTextField { descriptionTextField in
+            descriptionTextField.placeholder = "Описание - опционально"
+        }
+        alert.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Добавить", style: .default, handler: { [weak self] _ in
+            guard let self else { return }
+            if let title = alert.textFields?[0].text, let description = alert.textFields?[1].text {
+                presenter?.createTask(title: title, description: description)
+            }
+        }))
+        present(alert, animated: true)
+    }
+    
+    func addNewCellAnimated() {
+        tableView.beginUpdates()
+        tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        tableView.endUpdates()
     }
 }

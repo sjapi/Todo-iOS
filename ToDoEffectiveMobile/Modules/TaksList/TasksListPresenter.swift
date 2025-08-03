@@ -57,6 +57,14 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     func getTaskModel(for index: Int) -> TodoTaskModel? {
         return interactor?.tasksList[index]
     }
+    
+    func onCreateTaskDidTap() {
+        view?.showCreateTaskView()
+    }
+    
+    func createTask(title: String, description: String?) {
+        interactor?.addNewTask(title: title, description: description)
+    }
 }
 
 // MARK: - Private Methods
@@ -83,5 +91,9 @@ extension TasksListPresenter: InteractorToPresenterTasksListProtocol {
             guard let self else { return }
             view?.updateCell(at: IndexPath(row: id, section: 0))
         }
+    }
+    
+    func newTaskAdded(_ task: TodoTaskModel) {
+        view?.addNewCellAnimated()
     }
 }

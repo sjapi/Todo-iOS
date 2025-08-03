@@ -12,8 +12,10 @@ import Foundation
 protocol PresenterToViewTasksListProtocol {
     func updateCell(at indexPath: IndexPath)
     func updateTable()
+    func addNewCellAnimated()
     func showEmptyStateLabel(_ isShown: Bool)
     func showErrorAlert(message: String)
+    func showCreateTaskView()
 }
 
 // MARK: View Input (View -> Presenter)
@@ -25,12 +27,14 @@ protocol ViewToPresenterTasksListProtocol: AnyObject {
     func viewDidLoad()
     func onTaskCheckboxTapped(index: Int)
     func onTaskTapped(index: Int)
+    func onCreateTaskDidTap()
     func searchTextDidChange(_ text: String)
     func onEditActionTapped(at index: Int)
     func onShareActionTapped(at index: Int)
     func onDeleteActionTapped(at index: Int)
     func getTasksCount() -> Int
     func getTaskModel(for index: Int) -> TodoTaskModel?
+    func createTask(title: String, description: String?)
 }
 
 // MARK: Interactor Input (Presenter -> Interactor)
@@ -42,12 +46,14 @@ protocol PresenterToInteractorTasksListProtocol {
     func searchTextChanged(_ text: String)
     func changeTaskState(id: Int)
     func deleteTask(id: Int)
+    func addNewTask(title: String, description: String?)
 }
 
 // MARK: Interactor Output (Interactor -> Presenter)
 protocol InteractorToPresenterTasksListProtocol: AnyObject {
     func tasksUpdated(_ result: Result<[TodoTaskModel], Error>)
     func taskStateChanged(id: Int)
+    func newTaskAdded(_ task: TodoTaskModel)
 }
 
 // MARK: Router Input (Presenter -> Router)
