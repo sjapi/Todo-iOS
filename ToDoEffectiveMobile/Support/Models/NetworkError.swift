@@ -12,4 +12,5 @@ enum NetworkError: Error {
     case urlSessionError(error: Error)
     case decodeError
     case noData
+    case noConnection
 }

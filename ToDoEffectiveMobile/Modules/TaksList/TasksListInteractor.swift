@@ -63,6 +63,10 @@ private extension TasksListInteractor {
         allTasksList = mock()
         tasksList = allTasksList
         
+        guard InternetConnectionObserver.shared.isReachable else {
+            presenter?.tasksUpdated(.failure(NetworkError.noConnection))
+            return
+        }
         networkManager.loadTodoTasks { [weak self] result in
             guard let self else { return }
             switch result {
