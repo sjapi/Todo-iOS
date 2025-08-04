@@ -31,7 +31,8 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     }
     
     func onTaskTapped(index: Int) {
-        print("Navigate to task detail module")
+        guard let task = interactor?.tasksList[index] else { return }
+        router?.navigateToTaskDetail(with: task)
     }
     
     func searchTextDidChange(_ text: String) {

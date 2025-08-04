@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit.UIViewController
 
 // MARK: View Output (Presenter -> View)
 protocol PresenterToViewTasksListProtocol {
@@ -58,5 +59,5 @@ protocol InteractorToPresenterTasksListProtocol: AnyObject {
 
 // MARK: Router Input (Presenter -> Router)
 protocol PresenterToRouterTasksListProtocol {
-    
+    func navigateToTaskDetail(with task: TodoTaskModel)
 }
