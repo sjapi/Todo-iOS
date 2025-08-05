@@ -6,25 +6,44 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		10D98E992E423226009D2B73 /* TodoTaskEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D98E972E423226009D2B73 /* TodoTaskEntity+CoreDataClass.swift */; };
+		10D98E9A2E423226009D2B73 /* TodoTaskEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D98E982E423226009D2B73 /* TodoTaskEntity+CoreDataProperties.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		10584FEB2E3A55D700C337E8 /* ToDoEffectiveMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoEffectiveMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		10D98E972E423226009D2B73 /* TodoTaskEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TodoTaskEntity+CoreDataClass.swift"; path = "ToDoEffectiveMobile/Support/CoreData/TodoTaskEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		10D98E982E423226009D2B73 /* TodoTaskEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TodoTaskEntity+CoreDataProperties.swift"; path = "ToDoEffectiveMobile/Support/CoreData/TodoTaskEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		10584FFD2E3A55D900C337E8 /* Exceptions for "ToDoEffectiveMobile" folder in "ToDoEffectiveMobile" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Support/CoreData/TodoTaskEntity.xcdatamodeld,
 				Support/Info.plist,
 			);
 			target = 10584FEA2E3A55D700C337E8 /* ToDoEffectiveMobile */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		10D98E462E4231C3009D2B73 /* Exceptions for "ToDoEffectiveMobile" folder in "Copy Bundle Resources" phase from "ToDoEffectiveMobile" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 10584FE92E3A55D700C337E8 /* Resources */;
+			membershipExceptions = (
+				Support/CoreData/TodoTaskEntity.xcdatamodeld,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		10584FED2E3A55D700C337E8 /* ToDoEffectiveMobile */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				10584FFD2E3A55D900C337E8 /* Exceptions for "ToDoEffectiveMobile" folder in "ToDoEffectiveMobile" target */,
+				10D98E462E4231C3009D2B73 /* Exceptions for "ToDoEffectiveMobile" folder in "Copy Bundle Resources" phase from "ToDoEffectiveMobile" target */,
 			);
 			path = ToDoEffectiveMobile;
 			sourceTree = "<group>";
@@ -45,6 +64,8 @@
 		10584FE22E3A55D700C337E8 = {
 			isa = PBXGroup;
 			children = (
+				10D98E972E423226009D2B73 /* TodoTaskEntity+CoreDataClass.swift */,
+				10D98E982E423226009D2B73 /* TodoTaskEntity+CoreDataProperties.swift */,
 				10584FED2E3A55D700C337E8 /* ToDoEffectiveMobile */,
 				10584FEC2E3A55D700C337E8 /* Products */,
 			);
@@ -132,6 +153,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10D98E992E423226009D2B73 /* TodoTaskEntity+CoreDataClass.swift in Sources */,
+				10D98E9A2E423226009D2B73 /* TodoTaskEntity+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
