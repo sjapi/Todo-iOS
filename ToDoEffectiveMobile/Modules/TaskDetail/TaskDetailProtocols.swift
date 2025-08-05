@@ -53,7 +53,7 @@ protocol PresenterToInteractorTaskDetailProtocol {
 
 // MARK: - Interactor Output (Interactor -> Presenter)
 protocol InteractorToPresenterTaskDetailProtocol {
-    func taskUpdated(_ task: TodoTaskModel)
+    func taskUpdated(_ task: TodoTaskEntity)
 }
 
 

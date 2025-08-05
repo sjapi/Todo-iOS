@@ -11,7 +11,7 @@ import UIKit
 
 final class TaskDetailRouter: PresenterToRouterTaskDetailProtocol {
     // MARK: Static methods
-    static func createModule(task: TodoTaskModel) -> UIViewController {
+    static func createModule(task: TodoTaskEntity) -> UIViewController {
         let viewController = TaskDetailViewController()
         let presenter: ViewToPresenterTaskDetailProtocol & InteractorToPresenterTaskDetailProtocol = TaskDetailPresenter()
         viewController.presenter = presenter

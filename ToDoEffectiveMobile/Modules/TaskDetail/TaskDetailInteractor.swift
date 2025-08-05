@@ -11,33 +11,33 @@ import Foundation
 final class TaskDetailInteractor: PresenterToInteractorTaskDetailProtocol {
     // MARK: Properties
     var presenter: InteractorToPresenterTaskDetailProtocol?
-    private var task: TodoTaskModel
+    private var task: TodoTaskEntity
 
     // MARK: - Init
-    init(task: TodoTaskModel) {
+    init(task: TodoTaskEntity) {
         self.task = task
     }
     
     // MARK: - Public Methods
     func getTaskTitle() -> String? {
-        return task.name
+        return task.title
     }
     
     func getTaskDescription() -> String? {
-        return task.description
+        return task.desc
     }
     
     func getTaskTimestamp() -> Int? {
-        return task.timestampCreated
+        return Int(task.timestampCreated)
     }
     
     func updateTitle(_ new: String) {
-        task.name = new
+        CoreDataManager.shared.updateTaskTitle(task: task, newTitle: new)
         presenter?.taskUpdated(task)
     }
     
     func updateDescription(_ new: String) {
-        task.description = new
+        CoreDataManager.shared.updateTaskDescription(task: task, newDescription: new)
         presenter?.taskUpdated(task)
     }
 }

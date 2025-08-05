@@ -15,6 +15,7 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     var router: PresenterToRouterTasksListProtocol?
     
     // MARK: - Other Properties
+    private var tasks: [TodoTaskEntity] = []
     
     // MARK: - Init
     init() {
@@ -26,13 +27,18 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
         interactor?.loadTasks()
     }
     
-    func onTaskCheckboxTapped(index: Int) {
-        interactor?.changeTaskState(id: index)
+    func viewWillAppear() {
+        interactor?.updateTasks()
+    }
+    
+    func onTaskCheckboxTapped(_ model: TodoTaskModel) {
+        if let index = tasks.firstIndex(where: { $0.id == model.id }) {
+            interactor?.changeTaskState(tasks[index])
+        }
     }
     
     func onTaskTapped(index: Int) {
-        guard let task = interactor?.tasksList[index] else { return }
-        router?.navigateToTaskDetail(with: task)
+        router?.navigateToTaskDetail(with: tasks[index])
     }
     
     func searchTextDidChange(_ text: String) {
@@ -40,23 +46,30 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     }
     
     func onEditActionTapped(at index: Int) {
-        print("edit")
     }
     
     func onShareActionTapped(at index: Int) {
-        print("share")
     }
     
     func onDeleteActionTapped(at index: Int) {
-        interactor?.deleteTask(id: index)
+        interactor?.deleteTask(tasks[index])
     }
     
     func getTasksCount() -> Int {
-        return interactor?.tasksList.count ?? 0
+        return tasks.count
     }
     
     func getTaskModel(for index: Int) -> TodoTaskModel? {
-        return interactor?.tasksList[index]
+        let entity = tasks[index]
+        let task = TodoTaskModel(
+            id: entity.id ?? UUID(),
+            name: entity.title ?? "",
+            description: entity.desc ?? "",
+            timestampCreated: Int(entity.timestampCreated),
+            timestampModified: Int(entity.timestampModified),
+            isCompleted: entity.isCompleted
+        )
+        return task
     }
     
     func onCreateTaskDidTap() {
@@ -74,27 +87,42 @@ private extension TasksListPresenter {
 
 // MARK: - InteractorToPresenterTasksListProtocol
 extension TasksListPresenter: InteractorToPresenterTasksListProtocol {
-    func tasksUpdated(_ result: Result<[TodoTaskModel], Error>) {
+    func tasksUpdated(_ result: Result<[TodoTaskEntity], Error>) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             switch result {
-            case .success(_):
-                view?.showEmptyStateLabel(interactor?.tasksList.count ?? 1 == 0)
+            case .success(let tasks):
+                self.tasks = tasks
+                view?.showEmptyStateLabel(tasks.count == 0)
                 view?.updateTable()
+                view?.updateTasksCountLabel(tasks.count)
             case .failure(let error):
                 self.view?.showErrorAlert(message: error.localizedDescription)
             }
         }
     }
     
-    func taskStateChanged(id: Int) {
+    func taskStateChanged(_ task: TodoTaskEntity) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            view?.updateCell(at: IndexPath(row: id, section: 0))
+            if let index = tasks.firstIndex(of: task) {
+                view?.updateCell(at: IndexPath(row: index, section: 0))
+            }
         }
     }
     
-    func newTaskAdded(_ task: TodoTaskModel) {
+    func taskDeleted(_ task: TodoTaskEntity) {
+        if let index = tasks.firstIndex(of: task) {
+            tasks.remove(at: index)
+            view?.deleteCell(at: IndexPath(row: index, section: 0))
+            view?.showEmptyStateLabel(tasks.isEmpty)
+            view?.updateTasksCountLabel(tasks.count)
+        }
+    }
+    
+    func newTaskAdded(_ task: TodoTaskEntity) {
+        tasks.insert(task, at: 0)
         view?.addNewCellAnimated()
+        view?.updateTasksCountLabel(tasks.count)
     }
 }

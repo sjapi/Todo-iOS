@@ -15,7 +15,8 @@ final class TasksListViewController: UITableViewController {
     // MARK: - UI
     private let searchController = UISearchController()
     private let emptyStateLabel = UILabel()
-    
+    private let tasksCountLabel = UILabel()
+
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +25,11 @@ final class TasksListViewController: UITableViewController {
         setupTableView()
         setupToolbar()
         setupEmptyStateLabel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter?.viewWillAppear()
     }
     
     // MARK: - Init & Deinit
@@ -44,7 +50,7 @@ final class TasksListViewController: UITableViewController {
             cell.configure(with: todo)
             cell.onCheckboxTappedHandler = { [weak self] in
                 guard let self else { return }
-                presenter?.onTaskCheckboxTapped(index: indexPath.row)
+                presenter?.onTaskCheckboxTapped(todo)
             }
         }
         return cell
@@ -97,11 +103,17 @@ private extension TasksListViewController {
     
     func setupToolbar() {
         navigationController?.isToolbarHidden = false
-        let centerLabel = UILabel()
-        centerLabel.text = "\(presenter?.getTasksCount() ?? 0) Задач"
-        centerLabel.font = .systemFont(ofSize: 13)
-        centerLabel.sizeToFit()
-        let centerItem = UIBarButtonItem(customView: centerLabel)
+
+        tasksCountLabel.text = "\(presenter?.getTasksCount() ?? 0) Задач"
+        tasksCountLabel.font = .systemFont(ofSize: 13)
+        tasksCountLabel.textAlignment = .center
+        
+        let labelContainer = UIView(frame: CGRect(x: 0, y: 0, width: 120, height: 30))
+        tasksCountLabel.frame = labelContainer.bounds
+        labelContainer.addSubview(tasksCountLabel)
+        
+        let centerItem = UIBarButtonItem(customView: labelContainer)
+        
         self.toolbarItems = [
             UIBarButtonItem(systemItem: .flexibleSpace),
             centerItem,
@@ -201,5 +213,15 @@ extension TasksListViewController: PresenterToViewTasksListProtocol {
         tableView.beginUpdates()
         tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
         tableView.endUpdates()
+    }
+    
+    func deleteCell(at indexPath: IndexPath) {
+        tableView.beginUpdates()
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.endUpdates()
+    }
+    
+    func updateTasksCountLabel(_ newCount: Int) {
+        tasksCountLabel.text = "\(newCount) Задач"
     }
 }

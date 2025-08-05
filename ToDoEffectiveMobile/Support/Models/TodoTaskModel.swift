@@ -5,7 +5,10 @@
 //  Created by Arseniy Zolotarev on 31.07.2025.
 //
 
+import Foundation
+
 struct TodoTaskModel {
+    let id: UUID
     var name: String
     var description: String?
     var timestampCreated: Int

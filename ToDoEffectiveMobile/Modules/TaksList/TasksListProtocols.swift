@@ -12,11 +12,13 @@ import UIKit.UIViewController
 // MARK: View Output (Presenter -> View)
 protocol PresenterToViewTasksListProtocol {
     func updateCell(at indexPath: IndexPath)
+    func deleteCell(at indexPath: IndexPath)
     func updateTable()
     func addNewCellAnimated()
     func showEmptyStateLabel(_ isShown: Bool)
     func showErrorAlert(message: String)
     func showCreateTaskView()
+    func updateTasksCountLabel(_ newCount: Int)
 }
 
 // MARK: View Input (View -> Presenter)
@@ -26,7 +28,8 @@ protocol ViewToPresenterTasksListProtocol: AnyObject {
     var router: PresenterToRouterTasksListProtocol? { get set }
     
     func viewDidLoad()
-    func onTaskCheckboxTapped(index: Int)
+    func viewWillAppear()
+    func onTaskCheckboxTapped(_ model: TodoTaskModel)
     func onTaskTapped(index: Int)
     func onCreateTaskDidTap()
     func searchTextDidChange(_ text: String)
@@ -42,22 +45,23 @@ protocol ViewToPresenterTasksListProtocol: AnyObject {
 protocol PresenterToInteractorTasksListProtocol {
     var presenter: InteractorToPresenterTasksListProtocol? { get set }
    
-    var tasksList: [TodoTaskModel] { get }
     func loadTasks()
     func searchTextChanged(_ text: String)
-    func changeTaskState(id: Int)
-    func deleteTask(id: Int)
+    func changeTaskState(_ task: TodoTaskEntity)
+    func deleteTask(_ task: TodoTaskEntity)
     func addNewTask(title: String, description: String?)
+    func updateTasks()
 }
 
 // MARK: Interactor Output (Interactor -> Presenter)
 protocol InteractorToPresenterTasksListProtocol: AnyObject {
-    func tasksUpdated(_ result: Result<[TodoTaskModel], Error>)
-    func taskStateChanged(id: Int)
-    func newTaskAdded(_ task: TodoTaskModel)
+    func tasksUpdated(_ result: Result<[TodoTaskEntity], Error>)
+    func taskStateChanged(_ task: TodoTaskEntity)
+    func taskDeleted(_ task: TodoTaskEntity)
+    func newTaskAdded(_ task: TodoTaskEntity)
 }
 
 // MARK: Router Input (Presenter -> Router)
 protocol PresenterToRouterTasksListProtocol {
-    func navigateToTaskDetail(with task: TodoTaskModel)
+    func navigateToTaskDetail(with task: TodoTaskEntity)
 }

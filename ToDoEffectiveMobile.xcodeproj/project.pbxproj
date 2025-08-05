@@ -22,6 +22,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Support/CoreData/TodoTaskEntity.xcdatamodeld,
+				"Support/CoreData/TodoTaskEntity+CoreDataClass.swift",
+				"Support/CoreData/TodoTaskEntity+CoreDataProperties.swift",
 				Support/Info.plist,
 			);
 			target = 10584FEA2E3A55D700C337E8 /* ToDoEffectiveMobile */;

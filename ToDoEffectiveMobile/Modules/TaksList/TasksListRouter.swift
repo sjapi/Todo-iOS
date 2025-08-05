@@ -26,7 +26,7 @@ final class TasksListRouter: PresenterToRouterTasksListProtocol {
         return viewController
     }
     
-    func navigateToTaskDetail(with task: TodoTaskModel) {
+    func navigateToTaskDetail(with task: TodoTaskEntity) {
         let module = TaskDetailRouter.createModule(task: task)
         vc?.navigationController?.pushViewController(module, animated: true)
     }
