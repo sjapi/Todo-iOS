@@ -13,6 +13,45 @@ final class TaskDetailPresenter: ViewToPresenterTaskDetailProtocol {
     var view: PresenterToViewTaskDetailProtocol?
     var interactor: PresenterToInteractorTaskDetailProtocol?
     var router: PresenterToRouterTaskDetailProtocol?
+   
+    // MARK: - Public Methods
+    func viewDidLoad() {
+        view?.setupUI()
+        let title = interactor?.getTaskTitle() ?? ""
+        let description = interactor?.getTaskDescription() ?? ""
+        let timestamp = Formatter.formatTimestamp(interactor?.getTaskTimestamp() ?? 0)
+        view?.updateInfo(title: title, description: description, timestamp: timestamp)
+        view?.updateDescriptionPlaceholder(!description.isEmpty)
+        view?.updateTitlePlaceholder(!title.isEmpty)
+    }
+    
+    func viewWillAppear() {
+        view?.hideTitleAndToolbar()
+    }
+    
+    func viewWillDisappear() {
+        view?.showTitleAndToolbar()
+    }
+    
+    func touchesBegan() {
+        view?.hideKeyboardIfNeeded()
+    }
+    
+    func titleDidChange(_ new: String) {
+        interactor?.updateTitle(new)
+    }
+    
+    func descriptionDidChange(_ new: String) {
+        interactor?.updateDescription(new)
+    }
+    
+    func didPressTitleEnter() {
+        view?.hideKeyboardIfNeeded()
+    }
+    
+    func didPressDescriptionEnter() {
+        view?.hideKeyboardIfNeeded()
+    }
 }
 
 // MARK: - Private Methods
@@ -22,5 +61,12 @@ private extension TaskDetailPresenter {
 
 // MARK: - InteractorToPresenterTaskDetailProtocol
 extension TaskDetailPresenter: InteractorToPresenterTaskDetailProtocol {
-    
+    func taskUpdated(_ task: TodoTaskModel) {
+        let title = task.name
+        let description = task.description ?? ""
+        let timestamp = Formatter.formatTimestamp(task.timestampCreated)
+        view?.updateInfo(title: title, description: description, timestamp: timestamp)
+        view?.updateDescriptionPlaceholder(!description.isEmpty)
+        view?.updateTitlePlaceholder(!title.isEmpty)
+    }
 }

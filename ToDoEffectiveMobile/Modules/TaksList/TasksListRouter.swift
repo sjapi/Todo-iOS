@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import UIKit
+import UIKit.UIViewController
 
 final class TasksListRouter: PresenterToRouterTasksListProtocol {
     weak var vc: UIViewController?
@@ -27,7 +27,7 @@ final class TasksListRouter: PresenterToRouterTasksListProtocol {
     }
     
     func navigateToTaskDetail(with task: TodoTaskModel) {
-        let module = TaskDetailRouter.createModule()
+        let module = TaskDetailRouter.createModule(task: task)
         vc?.navigationController?.pushViewController(module, animated: true)
     }
 }

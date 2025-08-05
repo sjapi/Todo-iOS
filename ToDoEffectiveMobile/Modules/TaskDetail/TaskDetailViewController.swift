@@ -26,23 +26,22 @@ final class TaskDetailViewController: UIViewController {
     // MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureAppearance()
-        setupScrollView()
-        setupTitle()
-        setupDate()
-        setupDescription()
+        presenter?.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.setToolbarHidden(true, animated: false)
+        presenter?.viewWillAppear()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.setToolbarHidden(false, animated: false)
+        presenter?.viewWillDisappear()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        presenter?.touchesBegan()
     }
 }
 
@@ -74,7 +73,6 @@ private extension TaskDetailViewController {
     }
     
     func setupTitle() {
-        titleTextView.text = "Задача номер один супер важное дело и длинное"
         titleTextView.font = .preferredFont(forTextStyle: .extraLargeTitle)
         titleTextView.isScrollEnabled = false
         titleTextView.translatesAutoresizingMaskIntoConstraints = false
@@ -103,7 +101,6 @@ private extension TaskDetailViewController {
     
     
     func setupDate() {
-        dateLabel.text = "10/10/10"
         dateLabel.textColor = .secondaryLabel
         dateLabel.font = .preferredFont(forTextStyle: .subheadline)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -117,26 +114,25 @@ private extension TaskDetailViewController {
     }
     
     func setupDescription() {
-        descriptionTextView.text = "Lorem ipsum saf ifg as0a asidfjhn dsafj lajdf al;kjdf lakjsdf laksdjf aslkdjf as"
         descriptionTextView.font = .preferredFont(forTextStyle: .body)
         descriptionTextView.isScrollEnabled = false
         descriptionTextView.backgroundColor = .clear
         descriptionTextView.delegate = self
         descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(descriptionTextView)
-
+        
         descriptionPlaceholderLabel.text = "Описание"
         descriptionPlaceholderLabel.font = descriptionTextView.font
         descriptionPlaceholderLabel.textColor = .secondaryLabel
         descriptionPlaceholderLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(descriptionPlaceholderLabel)
-
+        
         NSLayoutConstraint.activate([
             descriptionTextView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10),
             descriptionTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             descriptionTextView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             descriptionTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-
+            
             descriptionPlaceholderLabel.topAnchor.constraint(equalTo: descriptionTextView.topAnchor, constant: 8),
             descriptionPlaceholderLabel.leadingAnchor.constraint(equalTo: descriptionTextView.leadingAnchor, constant: 5),
             descriptionPlaceholderLabel.trailingAnchor.constraint(equalTo: descriptionTextView.trailingAnchor)
@@ -144,20 +140,71 @@ private extension TaskDetailViewController {
         
         descriptionPlaceholderLabel.isHidden = !descriptionTextView.text.isEmpty
     }
-
+    
 }
 
 // MARK: - UITextViewDelegate
 extension TaskDetailViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         if textView === titleTextView {
-            titlePlaceholderLabel.isHidden = !textView.text.isEmpty
+            presenter?.titleDidChange(textView.text)
         } else if textView == descriptionTextView {
-            descriptionPlaceholderLabel.isHidden = !textView.text.isEmpty
+            presenter?.descriptionDidChange(textView.text)
         }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            if textView === titleTextView {
+                presenter?.didPressTitleEnter()
+            } else if textView == descriptionTextView {
+                presenter?.didPressDescriptionEnter()
+            }
+        }
+        return true
     }
 }
 
 // MARK: - PresenterToViewTaskDetailProtocol
 extension TaskDetailViewController: PresenterToViewTaskDetailProtocol{
+    func updateInfo(title: String, description: String, timestamp: String) {
+        titleTextView.text = title
+        descriptionTextView.text = description
+        dateLabel.text = timestamp
+    }
+    
+    func setupUI() {
+        configureAppearance()
+        setupScrollView()
+        setupTitle()
+        setupDate()
+        setupDescription()
+    }
+    
+    func hideKeyboardIfNeeded() {
+        if titleTextView.isFirstResponder {
+            titleTextView.resignFirstResponder()
+        } else if descriptionTextView.isFirstResponder {
+            descriptionTextView.resignFirstResponder()
+        }
+    }
+    
+    func hideTitleAndToolbar() {
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.setToolbarHidden(true, animated: false)
+        
+    }
+    
+    func showTitleAndToolbar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.setToolbarHidden(false, animated: false)
+    }
+    
+    func updateTitlePlaceholder(_ isHidden: Bool) {
+        titlePlaceholderLabel.isHidden = isHidden
+    }
+    
+    func updateDescriptionPlaceholder(_ isHidden: Bool) {
+        descriptionPlaceholderLabel.isHidden = isHidden
+    }
 }

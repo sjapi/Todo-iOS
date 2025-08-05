@@ -20,8 +20,10 @@ final class TasksListInteractor: PresenterToInteractorTasksListProtocol {
     func loadTasks() {
         print("loadTasks interactor method called")
         if UserDefaultsManager.shared.areTodosDownloaded {
+            print("lets load from db")
             loadFromDB()
         } else {
+            print("lets load from server")
             loadFromServer()
         }
     }
@@ -73,10 +75,10 @@ private extension TasksListInteractor {
             case .success(let response):
                 saveResponseToDB(response)
                 presenter?.tasksUpdated(.success(tasksList))
-                print("load success")
                 // UserDefaultsManager.shared.areTodosDownloaded = true
             case .failure(let error):
                 presenter?.tasksUpdated(.failure(error))
+                print(error)
             }
         }
     }

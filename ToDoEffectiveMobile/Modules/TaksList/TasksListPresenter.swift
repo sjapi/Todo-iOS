@@ -81,8 +81,8 @@ extension TasksListPresenter: InteractorToPresenterTasksListProtocol {
             case .success(_):
                 view?.showEmptyStateLabel(interactor?.tasksList.count ?? 1 == 0)
                 view?.updateTable()
-            case .failure:
-                self.view?.showErrorAlert(message: "Ошибка загрузки задач")
+            case .failure(let error):
+                self.view?.showErrorAlert(message: error.localizedDescription)
             }
         }
     }
