@@ -13,18 +13,15 @@ final class TasksListViewController: UITableViewController {
     var presenter: ViewToPresenterTasksListProtocol?
     
     // MARK: - UI
+    private let loader = UIActivityIndicatorView()
     private let searchController = UISearchController()
     private let emptyStateLabel = UILabel()
     private let tasksCountLabel = UILabel()
-
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter?.viewDidLoad()
-        setupNavigationBar()
-        setupTableView()
-        setupToolbar()
-        setupEmptyStateLabel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,14 +69,15 @@ final class TasksListViewController: UITableViewController {
             return preview
         }, actionProvider: { [weak self] _ in
             guard let self else { return nil }
+            guard let task = presenter?.getTaskModel(for: indexPath.row) else { return nil }
             let editAction = UIAction(title: "Редактировать", image: UIImage(systemName: "square.and.pencil")) { _ in
-                self.presenter?.onEditActionTapped(at: indexPath.row)
+                self.presenter?.onEditActionTapped(task)
             }
             let shareAction = UIAction(title: "Поделиться", image: UIImage(systemName: "square.and.arrow.up")) { _ in
-                self.presenter?.onShareActionTapped(at: indexPath.row)
+                self.presenter?.onShareActionTapped(task)
             }
             let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-                self.presenter?.onDeleteActionTapped(at: indexPath.row)
+                self.presenter?.onDeleteActionTapped(task)
             }
             return UIMenu(title: "", children: [editAction, shareAction, deleteAction])
         })
@@ -103,7 +101,7 @@ private extension TasksListViewController {
     
     func setupToolbar() {
         navigationController?.isToolbarHidden = false
-
+        
         tasksCountLabel.text = "\(presenter?.getTasksCount() ?? 0) Задач"
         tasksCountLabel.font = .systemFont(ofSize: 13)
         tasksCountLabel.textAlignment = .center
@@ -143,6 +141,18 @@ private extension TasksListViewController {
             emptyStateLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
         ])
     }
+    
+    func setupLoader() {
+        loader.style = .large
+        loader.hidesWhenStopped = false
+        loader.isHidden = true
+        loader.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(loader)
+        NSLayoutConstraint.activate([
+            loader.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            loader.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
+        ])
+    }
 }
 
 // MARK: - Actions
@@ -172,6 +182,14 @@ extension TasksListViewController: UISearchControllerDelegate {
 
 // MARK: - Presenter -> View
 extension TasksListViewController: PresenterToViewTasksListProtocol {
+    func setupUI() {
+        setupNavigationBar()
+        setupTableView()
+        setupToolbar()
+        setupEmptyStateLabel()
+        setupLoader()
+
+    }
     func updateCell(at indexPath: IndexPath) {
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
@@ -223,5 +241,22 @@ extension TasksListViewController: PresenterToViewTasksListProtocol {
     
     func updateTasksCountLabel(_ newCount: Int) {
         tasksCountLabel.text = "\(newCount) Задач"
+    }
+    
+    func showShareSheet(text: String) {
+        let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        present(activityVC, animated: true)
+    }
+    
+    func showLoader(_ isShown: Bool) {
+        view.isUserInteractionEnabled = !isShown
+
+        if isShown {
+            loader.startAnimating()
+            loader.isHidden = false
+        } else {
+            loader.stopAnimating()
+            loader.isHidden = true
+        }
     }
 }

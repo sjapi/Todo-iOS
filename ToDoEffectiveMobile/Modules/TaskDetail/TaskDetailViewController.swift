@@ -77,6 +77,8 @@ private extension TaskDetailViewController {
     }
     
     func setupTitle() {
+        titleTextView.textContainerInset = .zero
+        titleTextView.textContainer.lineFragmentPadding = 0
         titleTextView.font = .preferredFont(forTextStyle: .extraLargeTitle)
         titleTextView.isScrollEnabled = false
         titleTextView.translatesAutoresizingMaskIntoConstraints = false
@@ -118,6 +120,8 @@ private extension TaskDetailViewController {
     }
     
     func setupDescription() {
+        descriptionTextView.textContainerInset = .zero
+        descriptionTextView.textContainer.lineFragmentPadding = 0
         descriptionTextView.font = .preferredFont(forTextStyle: .body)
         descriptionTextView.isScrollEnabled = false
         descriptionTextView.backgroundColor = .clear
@@ -210,5 +214,15 @@ extension TaskDetailViewController: PresenterToViewTaskDetailProtocol{
     
     func updateDescriptionPlaceholder(_ isHidden: Bool) {
         descriptionPlaceholderLabel.isHidden = isHidden
+    }
+    
+    func makeTitleViewFirstResponder() {
+        titleTextView.becomeFirstResponder()
+    }
+    
+    func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ок", style: .cancel))
+        present(alert, animated: true)
     }
 }

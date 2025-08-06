@@ -10,10 +10,15 @@ import Foundation
 
 final class TaskDetailPresenter: ViewToPresenterTaskDetailProtocol {
     // MARK: Properties
+    private let edit: Bool
     weak var view: PresenterToViewTaskDetailProtocol?
     var interactor: PresenterToInteractorTaskDetailProtocol?
     var router: PresenterToRouterTaskDetailProtocol?
    
+    init(edit: Bool) {
+        self.edit = edit
+    }
+    
     // MARK: - Public Methods
     func viewDidLoad() {
         view?.setupUI()
@@ -23,6 +28,9 @@ final class TaskDetailPresenter: ViewToPresenterTaskDetailProtocol {
         view?.updateInfo(title: title, description: description, timestamp: timestamp)
         view?.updateDescriptionPlaceholder(!description.isEmpty)
         view?.updateTitlePlaceholder(!title.isEmpty)
+        if edit {
+            view?.makeTitleViewFirstResponder()
+        }
     }
     
     func viewWillAppear() {
@@ -38,7 +46,15 @@ final class TaskDetailPresenter: ViewToPresenterTaskDetailProtocol {
     }
     
     func titleDidChange(_ new: String) {
-        interactor?.updateTitle(new)
+        if new.isEmpty {
+            view?.showErrorAlert(message: "Название задачи не может быть пустым")
+            let title = interactor?.getTaskTitle() ?? ""
+            let description = interactor?.getTaskDescription() ?? ""
+            let timestamp = Formatter.formatTimestamp(interactor?.getTaskTimestamp() ?? 0)
+            view?.updateInfo(title: title, description: description, timestamp: timestamp)
+        } else {
+            interactor?.updateTitle(new)
+        }
     }
     
     func descriptionDidChange(_ new: String) {

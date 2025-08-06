@@ -24,6 +24,8 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     
     // MARK: - Public Methods
     func viewDidLoad() {
+        view?.setupUI()
+        view?.showLoader(true)
         interactor?.loadTasks()
     }
     
@@ -38,21 +40,27 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     }
     
     func onTaskTapped(index: Int) {
-        router?.navigateToTaskDetail(with: tasks[index])
+        router?.navigateToTaskDetail(with: tasks[index], edit: false)
     }
     
     func searchTextDidChange(_ text: String) {
         interactor?.searchTextChanged(text)
     }
     
-    func onEditActionTapped(at index: Int) {
+    func onEditActionTapped(_ model: TodoTaskModel) {
+        if let index = tasks.firstIndex(where: { $0.id == model.id }) {
+            router?.navigateToTaskDetail(with: tasks[index], edit: true)
+        }
     }
     
-    func onShareActionTapped(at index: Int) {
+    func onShareActionTapped(_ model: TodoTaskModel) {
+        view?.showShareSheet(text: Formatter.createShareText(model))
     }
     
-    func onDeleteActionTapped(at index: Int) {
-        interactor?.deleteTask(tasks[index])
+    func onDeleteActionTapped(_ model: TodoTaskModel) {
+        if let index = tasks.firstIndex(where: { $0.id == model.id }) {
+            interactor?.deleteTask(tasks[index])
+        }
     }
     
     func getTasksCount() -> Int {
@@ -77,12 +85,17 @@ final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     }
     
     func createTask(title: String, description: String?) {
+        guard !title.isEmpty else {
+            view?.showErrorAlert(message: "Название задачи не может быть пустым")
+            return
+        }
         interactor?.addNewTask(title: title, description: description)
     }
 }
 
 // MARK: - Private Methods
 private extension TasksListPresenter {
+   
 }
 
 // MARK: - InteractorToPresenterTasksListProtocol
@@ -99,6 +112,7 @@ extension TasksListPresenter: InteractorToPresenterTasksListProtocol {
             case .failure(let error):
                 self.view?.showErrorAlert(message: error.localizedDescription)
             }
+            view?.showLoader(false)
         }
     }
     
@@ -117,7 +131,7 @@ extension TasksListPresenter: InteractorToPresenterTasksListProtocol {
             if let index = tasks.firstIndex(of: task) {
                 tasks.remove(at: index)
                 view?.deleteCell(at: IndexPath(row: index, section: 0))
-//                view?.showEmptyStateLabel(tasks.isEmpty)
+                view?.showEmptyStateLabel(tasks.isEmpty)
                 view?.updateTasksCountLabel(tasks.count)
             }
         }

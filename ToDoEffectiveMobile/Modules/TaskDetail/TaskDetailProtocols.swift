@@ -19,6 +19,9 @@ protocol PresenterToViewTaskDetailProtocol: AnyObject {
     
     func updateTitlePlaceholder(_ isHidden: Bool)
     func updateDescriptionPlaceholder(_ isHidden: Bool)
+    
+    func makeTitleViewFirstResponder()
+    func showErrorAlert(message: String)
 }
 
 // MARK: - View Input (View -> Presenter)

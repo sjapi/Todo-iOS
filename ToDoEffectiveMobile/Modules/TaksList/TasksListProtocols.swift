@@ -11,14 +11,18 @@ import UIKit.UIViewController
 
 // MARK: View Output (Presenter -> View)
 protocol PresenterToViewTasksListProtocol: AnyObject {
+    func setupUI()
+    func updateTable()
     func updateCell(at indexPath: IndexPath)
     func deleteCell(at indexPath: IndexPath)
-    func updateTable()
     func addNewCellAnimated()
+    func updateTasksCountLabel(_ newCount: Int)
+    
     func showEmptyStateLabel(_ isShown: Bool)
     func showErrorAlert(message: String)
     func showCreateTaskView()
-    func updateTasksCountLabel(_ newCount: Int)
+    func showShareSheet(text: String)
+    func showLoader(_ isShown: Bool)
 }
 
 // MARK: View Input (View -> Presenter)
@@ -33,9 +37,9 @@ protocol ViewToPresenterTasksListProtocol: AnyObject {
     func onTaskTapped(index: Int)
     func onCreateTaskDidTap()
     func searchTextDidChange(_ text: String)
-    func onEditActionTapped(at index: Int)
-    func onShareActionTapped(at index: Int)
-    func onDeleteActionTapped(at index: Int)
+    func onEditActionTapped(_ task: TodoTaskModel)
+    func onShareActionTapped(_ task: TodoTaskModel)
+    func onDeleteActionTapped(_ task: TodoTaskModel)
     func getTasksCount() -> Int
     func getTaskModel(for index: Int) -> TodoTaskModel?
     func createTask(title: String, description: String?)
@@ -63,5 +67,5 @@ protocol InteractorToPresenterTasksListProtocol: AnyObject {
 
 // MARK: Router Input (Presenter -> Router)
 protocol PresenterToRouterTasksListProtocol {
-    func navigateToTaskDetail(with task: TodoTaskEntity)
+    func navigateToTaskDetail(with task: TodoTaskEntity, edit: Bool)
 }
