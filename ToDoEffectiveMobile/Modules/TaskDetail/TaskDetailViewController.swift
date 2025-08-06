@@ -79,7 +79,11 @@ private extension TaskDetailViewController {
     func setupTitle() {
         titleTextView.textContainerInset = .zero
         titleTextView.textContainer.lineFragmentPadding = 0
-        titleTextView.font = .preferredFont(forTextStyle: .extraLargeTitle)
+        if #available(iOS 17.0, *) {
+            titleTextView.font = .preferredFont(forTextStyle: .extraLargeTitle)
+        } else {
+            titleTextView.font = .preferredFont(forTextStyle: .largeTitle)
+        }
         titleTextView.isScrollEnabled = false
         titleTextView.translatesAutoresizingMaskIntoConstraints = false
         titleTextView.backgroundColor = .clear
