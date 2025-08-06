@@ -112,17 +112,23 @@ extension TasksListPresenter: InteractorToPresenterTasksListProtocol {
     }
     
     func taskDeleted(_ task: TodoTaskEntity) {
-        if let index = tasks.firstIndex(of: task) {
-            tasks.remove(at: index)
-            view?.deleteCell(at: IndexPath(row: index, section: 0))
-            view?.showEmptyStateLabel(tasks.isEmpty)
-            view?.updateTasksCountLabel(tasks.count)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if let index = tasks.firstIndex(of: task) {
+                tasks.remove(at: index)
+                view?.deleteCell(at: IndexPath(row: index, section: 0))
+//                view?.showEmptyStateLabel(tasks.isEmpty)
+                view?.updateTasksCountLabel(tasks.count)
+            }
         }
     }
     
     func newTaskAdded(_ task: TodoTaskEntity) {
-        tasks.insert(task, at: 0)
-        view?.addNewCellAnimated()
-        view?.updateTasksCountLabel(tasks.count)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            tasks.insert(task, at: 0)
+            view?.addNewCellAnimated()
+            view?.updateTasksCountLabel(tasks.count)
+        }
     }
 }

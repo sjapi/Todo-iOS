@@ -17,50 +17,68 @@ final class TasksListInteractor: PresenterToInteractorTasksListProtocol {
     
     // MARK: - Public Methods
     func loadTasks() {
-        if UserDefaultsManager.shared.areTodosDownloaded {
-            loadFromDB()
-        } else {
-            loadFromServer()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            if UserDefaultsManager.shared.areTodosDownloaded {
+                loadFromDB()
+            } else {
+                loadFromServer()
+            }
         }
     }
     
     func updateTasks() {
-        loadFromDB()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            loadFromDB()
+        }
     }
     
     func changeTaskState(_ task: TodoTaskEntity) {
-        CoreDataManager.shared.toggleTaskState(task: task)
-        presenter?.taskStateChanged(task)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            CoreDataManager.shared.toggleTaskState(task: task)
+            presenter?.taskStateChanged(task)
+        }
     }
     
     func searchTextChanged(_ text: String) {
-        let filtered = text.isEmpty
-        ? allTasksList
-        : allTasksList.filter {
-            ($0.title?.localizedCaseInsensitiveContains(text) ?? false) ||
-            ($0.desc?.localizedCaseInsensitiveContains(text) ?? false)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            let filtered = text.isEmpty
+            ? allTasksList
+            : allTasksList.filter {
+                ($0.title?.localizedCaseInsensitiveContains(text) ?? false) ||
+                ($0.desc?.localizedCaseInsensitiveContains(text) ?? false)
+            }
+            presenter?.tasksUpdated(.success(filtered))
         }
-        presenter?.tasksUpdated(.success(filtered))
     }
     
     func deleteTask(_ task: TodoTaskEntity) {
-        CoreDataManager.shared.deleteTask(task: task)
-        allTasksList = CoreDataManager.shared.getAllTasks()
-        presenter?.taskDeleted(task)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            CoreDataManager.shared.deleteTask(task: task)
+            allTasksList = CoreDataManager.shared.getAllTasks()
+            presenter?.taskDeleted(task)
+        }
     }
     
     func addNewTask(title: String, description: String?) {
-        let now = Int64(Date.now.timeIntervalSince1970)
-        let new = TodoTaskEntity(context: CoreDataManager.shared.context)
-        new.id = UUID()
-        new.title = title
-        new.desc = description
-        new.timestampCreated = now
-        new.timestampModified = now
-        new.isCompleted = false
-        CoreDataManager.shared.saveTask(new: new)
-        allTasksList = CoreDataManager.shared.getAllTasks()
-        presenter?.newTaskAdded(new)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            let now = Int64(Date.now.timeIntervalSince1970)
+            let new = TodoTaskEntity(context: CoreDataManager.shared.context)
+            new.id = UUID()
+            new.title = title
+            new.desc = description
+            new.timestampCreated = now
+            new.timestampModified = now
+            new.isCompleted = false
+            CoreDataManager.shared.saveTask(new: new)
+            allTasksList = CoreDataManager.shared.getAllTasks()
+            presenter?.newTaskAdded(new)
+        }
     }
 }
 

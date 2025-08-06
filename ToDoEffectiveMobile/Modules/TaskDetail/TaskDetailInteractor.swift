@@ -32,13 +32,19 @@ final class TaskDetailInteractor: PresenterToInteractorTaskDetailProtocol {
     }
     
     func updateTitle(_ new: String) {
-        CoreDataManager.shared.updateTaskTitle(task: task, newTitle: new)
-        presenter?.taskUpdated(task)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            CoreDataManager.shared.updateTaskTitle(task: task, newTitle: new)
+            presenter?.taskUpdated(task)
+        }
     }
     
     func updateDescription(_ new: String) {
-        CoreDataManager.shared.updateTaskDescription(task: task, newDescription: new)
-        presenter?.taskUpdated(task)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            CoreDataManager.shared.updateTaskDescription(task: task, newDescription: new)
+            presenter?.taskUpdated(task)
+        }
     }
 }
 

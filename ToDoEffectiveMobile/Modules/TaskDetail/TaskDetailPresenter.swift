@@ -62,11 +62,14 @@ private extension TaskDetailPresenter {
 // MARK: - InteractorToPresenterTaskDetailProtocol
 extension TaskDetailPresenter: InteractorToPresenterTaskDetailProtocol {
     func taskUpdated(_ task: TodoTaskEntity) {
-        let title = task.title ?? ""
-        let description = task.desc ?? ""
-        let timestamp = Formatter.formatTimestamp(Int(task.timestampCreated))
-        view?.updateInfo(title: title, description: description, timestamp: timestamp)
-        view?.updateDescriptionPlaceholder(!description.isEmpty)
-        view?.updateTitlePlaceholder(!title.isEmpty)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let title = task.title ?? ""
+            let description = task.desc ?? ""
+            let timestamp = Formatter.formatTimestamp(Int(task.timestampCreated))
+            view?.updateInfo(title: title, description: description, timestamp: timestamp)
+            view?.updateDescriptionPlaceholder(!description.isEmpty)
+            view?.updateTitlePlaceholder(!title.isEmpty)
+        }
     }
 }
