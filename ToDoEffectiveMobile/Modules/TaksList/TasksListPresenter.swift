@@ -10,7 +10,7 @@ import Foundation
 
 final class TasksListPresenter: ViewToPresenterTasksListProtocol {
     // MARK: - VIPER Properties
-    var view: PresenterToViewTasksListProtocol?
+    weak var view: PresenterToViewTasksListProtocol?
     var interactor: PresenterToInteractorTasksListProtocol?
     var router: PresenterToRouterTasksListProtocol?
     

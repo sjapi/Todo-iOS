@@ -10,7 +10,7 @@ import Foundation
 import UIKit.UIViewController
 
 // MARK: View Output (Presenter -> View)
-protocol PresenterToViewTasksListProtocol {
+protocol PresenterToViewTasksListProtocol: AnyObject {
     func updateCell(at indexPath: IndexPath)
     func deleteCell(at indexPath: IndexPath)
     func updateTable()

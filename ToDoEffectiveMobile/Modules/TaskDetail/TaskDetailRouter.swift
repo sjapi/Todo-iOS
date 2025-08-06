@@ -22,4 +22,7 @@ final class TaskDetailRouter: PresenterToRouterTaskDetailProtocol {
         return viewController
     }
     
+    deinit {
+        print("router deinit")
+    }
 }

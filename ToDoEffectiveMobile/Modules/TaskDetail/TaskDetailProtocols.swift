@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - View Output (Presenter -> View)
-protocol PresenterToViewTaskDetailProtocol {
+protocol PresenterToViewTaskDetailProtocol: AnyObject {
     func updateInfo(title: String, description: String, timestamp: String)
     func setupUI()
     func hideKeyboardIfNeeded()
@@ -52,7 +52,7 @@ protocol PresenterToInteractorTaskDetailProtocol {
 
 
 // MARK: - Interactor Output (Interactor -> Presenter)
-protocol InteractorToPresenterTaskDetailProtocol {
+protocol InteractorToPresenterTaskDetailProtocol: AnyObject {
     func taskUpdated(_ task: TodoTaskEntity)
 }
 

@@ -10,7 +10,7 @@ import Foundation
 
 final class TaskDetailPresenter: ViewToPresenterTaskDetailProtocol {
     // MARK: Properties
-    var view: PresenterToViewTaskDetailProtocol?
+    weak var view: PresenterToViewTaskDetailProtocol?
     var interactor: PresenterToInteractorTaskDetailProtocol?
     var router: PresenterToRouterTaskDetailProtocol?
    
@@ -51,6 +51,10 @@ final class TaskDetailPresenter: ViewToPresenterTaskDetailProtocol {
     
     func didPressDescriptionEnter() {
         view?.hideKeyboardIfNeeded()
+    }
+    
+    deinit {
+        print("presenter deinit")
     }
 }
 

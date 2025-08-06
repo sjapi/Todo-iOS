@@ -13,7 +13,7 @@ final class TasksListInteractor: PresenterToInteractorTasksListProtocol {
     private let networkManager: NetworkManager = URLSessionNetworkManager()
     private var allTasksList: [TodoTaskEntity] = []
     
-    var presenter: InteractorToPresenterTasksListProtocol?
+    weak var presenter: InteractorToPresenterTasksListProtocol?
     
     // MARK: - Public Methods
     func loadTasks() {

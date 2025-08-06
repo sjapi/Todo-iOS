@@ -43,6 +43,10 @@ final class TaskDetailViewController: UIViewController {
         super.touchesBegan(touches, with: event)
         presenter?.touchesBegan()
     }
+    
+    deinit {
+        print("view controller deinit")
+    }
 }
 
 // MARK: - Private Extension

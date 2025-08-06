@@ -10,7 +10,7 @@ import Foundation
 
 final class TaskDetailInteractor: PresenterToInteractorTaskDetailProtocol {
     // MARK: Properties
-    var presenter: InteractorToPresenterTaskDetailProtocol?
+    weak var presenter: InteractorToPresenterTaskDetailProtocol?
     private var task: TodoTaskEntity
 
     // MARK: - Init
@@ -45,6 +45,10 @@ final class TaskDetailInteractor: PresenterToInteractorTaskDetailProtocol {
             CoreDataManager.shared.updateTaskDescription(task: task, newDescription: new)
             presenter?.taskUpdated(task)
         }
+    }
+    
+    deinit {
+        print("interactor deinit")
     }
 }
 
