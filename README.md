@@ -1,10 +1,6 @@
 # ToDoEffectiveMobile Test Task
 
-<img src="https://github.com/sjapi/Todo-iOS/blob/main/screenshots/1.png" width="200">
-
-<img src="https://github.com/sjapi/Todo-iOS/blob/main/screenshots/2.png" width="200">
-
-<img src="https://github.com/sjapi/Todo-iOS/blob/main/screenshots/3.png" width="200">
+<img src="https://github.com/sjapi/Todo-iOS/blob/main/screenshots/1.png" width="200">  <img src="https://github.com/sjapi/Todo-iOS/blob/main/screenshots/2.png" width="200">  <img src="https://github.com/sjapi/Todo-iOS/blob/main/screenshots/3.png" width="200">
 
 ## Overview  
 Simple ToDo List app with add/edit/delete/search tasks functionality. Uses CoreData for persistence and loads initial data from [dummyjson API](https://dummyjson.com/todos).
